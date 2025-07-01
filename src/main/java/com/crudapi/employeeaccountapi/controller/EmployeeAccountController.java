@@ -27,10 +27,10 @@ public class EmployeeAccountController {
         return repo.findAll();
     }
 
-    // GET employee by custom employeeId
-    @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<EmployeeAccount> getEmployeeByEmployeeId(@PathVariable String employeeId) {
-        Optional<EmployeeAccount> employee = repo.findByEmployeeId(employeeId);
+    // GET employee by Id
+    @GetMapping("/employee/{id}")
+    public ResponseEntity<EmployeeAccount> getEmployeeById(@PathVariable int id) {
+        Optional<EmployeeAccount> employee = repo.findById(id);
         return employee.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -41,14 +41,13 @@ public class EmployeeAccountController {
         return repo.save(employee);
     }
 
-    // PUT - update employee by custom employeeId
-    @PutMapping("/employee/{employeeId}")
-    public ResponseEntity<EmployeeAccount> updateEmployee(@PathVariable String employeeId,
+    // PUT - update employee by Id
+    @PutMapping("/employee/{Id}")
+    public ResponseEntity<EmployeeAccount> updateEmployee(@PathVariable Long id,
                                                           @RequestBody EmployeeAccount updatedEmployee) {
-        Optional<EmployeeAccount> existingEmployee = repo.findByEmployeeId(employeeId);
+        Optional<EmployeeAccount> existingEmployee = repo.findById(id);
         if (existingEmployee.isPresent()) {
             EmployeeAccount employee = existingEmployee.get();
-            employee.setName(updatedEmployee.getName());
             employee.setBankAccountNumber(updatedEmployee.getBankAccountNumber());
             employee.setBankName(updatedEmployee.getBankName());
             return ResponseEntity.ok(repo.save(employee));
@@ -57,12 +56,12 @@ public class EmployeeAccountController {
         }
     }
 
-    // DELETE - delete employee by custom employeeId
+    // DELETE - delete employee by Id
     @DeleteMapping("/employee/{employeeId}")
     @Transactional
-    public ResponseEntity<Void> deleteEmployee(@PathVariable String employeeId) {
-        if (repo.existsByEmployeeId(employeeId)) {
-            repo.deleteByEmployeeId(employeeId);
+    public ResponseEntity<Void> deleteEmployee(@PathVariable int id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
             return ResponseEntity.noContent().build(); // 204 No Content
         } else {
             return ResponseEntity.notFound().build(); // 404 Not Found

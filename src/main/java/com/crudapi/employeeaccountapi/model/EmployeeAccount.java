@@ -3,35 +3,20 @@ package com.crudapi.employeeaccountapi.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "accounts")
 public class EmployeeAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private int id;
 
-    private String employeeId;
-    private String name;
     private String bankAccountNumber;
     private String bankName;
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
-
-    public String getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getBankAccountNumber() {
