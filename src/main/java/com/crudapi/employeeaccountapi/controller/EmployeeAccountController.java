@@ -3,6 +3,7 @@ package com.crudapi.employeeaccountapi.controller;
 import com.crudapi.employeeaccountapi.model.EmployeeAccount;
 import com.crudapi.employeeaccountapi.repository.EmployeeAccountRepository;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,27 +28,28 @@ public class EmployeeAccountController {
         return repo.findAll();
     }
 
-    // GET employee by Id
-    @GetMapping("/employee/{id}")
-    public ResponseEntity<EmployeeAccount> getEmployeeById(@PathVariable int id) {
-        Optional<EmployeeAccount> employee = repo.findById(id);
+    // GET employee by custom employeeId
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<EmployeeAccount> getEmployeeByEmployeeId(@PathVariable String employeeId) {
+        Optional<EmployeeAccount> employee = repo.findByEmployeeId(employeeId);
         return employee.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // POST - create new employee
     @PostMapping
-    public EmployeeAccount createEmployee(@RequestBody EmployeeAccount employee) {
+    public EmployeeAccount createEmployee(@Valid @RequestBody EmployeeAccount employee) {
         return repo.save(employee);
     }
 
-    // PUT - update employee by Id
-    @PutMapping("/employee/{Id}")
-    public ResponseEntity<EmployeeAccount> updateEmployee(@PathVariable Long id,
-                                                          @RequestBody EmployeeAccount updatedEmployee) {
-        Optional<EmployeeAccount> existingEmployee = repo.findById(id);
+    // PUT - update employee by custom employeeId
+    @PutMapping("/employee/{employeeId}")
+    public ResponseEntity<EmployeeAccount> updateEmployee(@PathVariable String employeeId,
+                                                          @Valid @RequestBody EmployeeAccount updatedEmployee) {
+        Optional<EmployeeAccount> existingEmployee = repo.findByEmployeeId(employeeId);
         if (existingEmployee.isPresent()) {
             EmployeeAccount employee = existingEmployee.get();
+            employee.setName(updatedEmployee.getName());
             employee.setBankAccountNumber(updatedEmployee.getBankAccountNumber());
             employee.setBankName(updatedEmployee.getBankName());
             return ResponseEntity.ok(repo.save(employee));
@@ -56,12 +58,12 @@ public class EmployeeAccountController {
         }
     }
 
-    // DELETE - delete employee by Id
+    // DELETE - delete employee by custom employeeId
     @DeleteMapping("/employee/{employeeId}")
     @Transactional
-    public ResponseEntity<Void> deleteEmployee(@PathVariable int id) {
-        if (repo.existsById(id)) {
-            repo.deleteById(id);
+    public ResponseEntity<Void> deleteEmployee(@PathVariable String employeeId) {
+        if (repo.existsByEmployeeId(employeeId)) {
+            repo.deleteByEmployeeId(employeeId);
             return ResponseEntity.noContent().build(); // 204 No Content
         } else {
             return ResponseEntity.notFound().build(); // 404 Not Found

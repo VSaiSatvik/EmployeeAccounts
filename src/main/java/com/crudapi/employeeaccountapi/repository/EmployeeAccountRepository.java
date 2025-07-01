@@ -8,11 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeAccountRepository extends JpaRepository<EmployeeAccount, Long> {
-    Optional<EmployeeAccount> findById(int id);
-
-    void deleteById(int id);
-
-    boolean existsById(int id);
-
-    int id(int id);
+    Optional<EmployeeAccount> findByEmployeeId(String employeeId);
+    void deleteByEmployeeId(String employeeId);
+    boolean existsByEmployeeId(String employeeId);
 }
