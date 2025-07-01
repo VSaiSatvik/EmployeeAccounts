@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class EmployeeAccount {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String bankAccountNumber;
